@@ -4,8 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name ="users")
 public class User {
@@ -19,4 +24,6 @@ public class User {
     private String lastName;
     @Column(nullable = false, unique = true)
     private String email;
+    @Column
+    private LocalDateTime creationDate;
 }
