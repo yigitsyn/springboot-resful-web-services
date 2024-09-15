@@ -1,7 +1,6 @@
 package com.javapractice.springboot.controller;
 
 import com.javapractice.springboot.Dto.UserDto;
-import com.javapractice.springboot.entity.User;
 import com.javapractice.springboot.service.UserService;
 
 import org.springframework.http.HttpStatus;

@@ -2,38 +2,48 @@ package com.javapractice.springboot.service;
 
 
 import com.javapractice.springboot.Dto.UserDto;
-import com.javapractice.springboot.Dto.UserDtoConverter;
 import com.javapractice.springboot.entity.User;
+import com.javapractice.springboot.mapper.UserMapper;
 import com.javapractice.springboot.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.userMapper = userMapper;
     }
 
     public UserDto createUser(UserDto userDto) {
-        return UserDtoConverter.mapToUserDto(
-                userRepository.save(UserDtoConverter.mapToUser(userDto))
-        );
+        //modelmapper usage
+        //return modelMapper.map(userRepository.save(modelMapper.map(userDto,User.class)),UserDto.class);
+
+        //mapStruct usage
+        return userMapper.mapToUserDto(userRepository.save(userMapper.mapToUser(userDto)));
     }
 
     public UserDto getUserById(String id) {
-        return userRepository.findById(id)
-                .map(UserDtoConverter::mapToUserDto)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        //model mapper usage
+        //return userRepository.findById(id).map(user -> modelMapper.map(user,UserDto.class)).orElseThrow();
+        //mapStruct usage
+        return userMapper.mapToUserDto(userRepository.findById(id).orElse(null));
     }
 
     public List<UserDto> getAllUsers(){
-        return userRepository.findAll().stream().map(UserDtoConverter::mapToUserDto).collect(Collectors.toList());
+        //model mapper usage
+        //return userRepository.findAll().stream().map(user->modelMapper.map(user,UserDto.class)).collect(Collectors.toList());
+        //mapStruct usage
+        return userRepository.findAll().stream().map(user -> userMapper.mapToUserDto(user)).collect(Collectors.toList());
     }
 
     public UserDto updateUser(UserDto userDto) {
@@ -58,7 +68,8 @@ public class UserService {
         User updatedUser = userRepository.save(existingUser);
 
         // Güncellenmiş kullanıcıyı DTO'ya dönüştür ve geri döndür
-        return UserDtoConverter.mapToUserDto(updatedUser);
+        return  //modelMapper.map(updatedUser,UserDto.class);
+                userMapper.mapToUserDto(updatedUser);
     }
     public void deleteUser(String id) {
         userRepository.deleteById(id);

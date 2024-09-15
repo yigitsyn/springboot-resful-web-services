@@ -1,8 +1,8 @@
-package com.javapractice.springboot.Dto;
+package com.javapractice.springboot.mapper;
 
+import com.javapractice.springboot.Dto.UserDto;
 import com.javapractice.springboot.entity.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UserDtoConverter {
