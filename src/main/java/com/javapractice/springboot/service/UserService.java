@@ -1,6 +1,7 @@
 package com.javapractice.springboot.service;
 
-
+import com.javapractice.springboot.exception.EmailAlreadyExist;
+import com.javapractice.springboot.exception.UserNotFoundException;
 import com.javapractice.springboot.Dto.UserDto;
 import com.javapractice.springboot.entity.User;
 import com.javapractice.springboot.mapper.UserMapper;
@@ -26,8 +27,11 @@ public class UserService {
 
     public UserDto createUser(UserDto userDto) {
         //modelmapper usage
-        //return modelMapper.map(userRepository.save(modelMapper.map(userDto,User.class)),UserDto.class);
 
+        //return modelMapper.map(userRepository.save(modelMapper.map(userDto,User.class)),UserDto.class);
+        if(userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new EmailAlreadyExist(userDto.getEmail()+" is already used" );
+        }
         //mapStruct usage
         return userMapper.mapToUserDto(userRepository.save(userMapper.mapToUser(userDto)));
     }
@@ -36,7 +40,10 @@ public class UserService {
         //model mapper usage
         //return userRepository.findById(id).map(user -> modelMapper.map(user,UserDto.class)).orElseThrow();
         //mapStruct usage
-        return userMapper.mapToUserDto(userRepository.findById(id).orElse(null));
+        return userMapper.mapToUserDto(userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("user","id",id)
+                )
+        );
     }
 
     public List<UserDto> getAllUsers(){
