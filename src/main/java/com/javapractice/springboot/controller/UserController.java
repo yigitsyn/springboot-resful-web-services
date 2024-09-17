@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
         UserDto savedUser = userService.createUser(user);
+        savedUser.setCreationDate(LocalDateTime.now());
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
