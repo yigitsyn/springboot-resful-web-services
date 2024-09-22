@@ -3,6 +3,7 @@ package com.javapractice.springboot.controller;
 import com.javapractice.springboot.Dto.UserDto;
 import com.javapractice.springboot.service.UserService;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class UserController {
     //build create User REST API
     //http://localhost:8080/users/api Post Req
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user) {
         UserDto savedUser = userService.createUser(user);
         savedUser.setCreationDate(LocalDateTime.now());
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
@@ -51,7 +52,7 @@ public class UserController {
     // build Update User Rest Api
     //  http://localhost:8080/users/api/6675b2dd-0d7f-44ee-9c14-22ac107863cb Put + header
     @PutMapping("{id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable String id, @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable String id, @Valid @RequestBody UserDto userDto) {
         // request bodydeki id alanı boş olduğu yani urlden aldığı için burada id setlemesi yapılması  gerekir.
         userDto.setId(id);
         UserDto updatedUser = userService.updateUser(userDto);
